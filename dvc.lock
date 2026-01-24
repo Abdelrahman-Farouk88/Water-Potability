@@ -1,0 +1,79 @@
+schema: '2.0'
+stages:
+  data_collection:
+    cmd: python src/data/data_collection.py
+    deps:
+    - path: data/raw/water_potability.csv
+      hash: md5
+      md5: a5eeae83d792e40da6c2f9e1eab945fc
+      size: 525187
+    - path: src/data/data_collection.py
+      hash: md5
+      md5: 8190c440d80129d7b5e8db854f7b6411
+      size: 2398
+    params:
+      params.yaml:
+        data_collection.test_size: 0.2
+    outs:
+    - path: data/raw/test.csv
+      hash: md5
+      md5: 66185e107102acccc3d127348394a632
+      size: 104672
+    - path: data/raw/train.csv
+      hash: md5
+      md5: 4e2e1af41df8c7e06d17c2047e710397
+      size: 417590
+  pre_processing:
+    cmd: python src/data/data_prep.py
+    deps:
+    - path: data/raw
+      hash: md5
+      md5: 9a1f432539ff80d8408391370bf8a3d1.dir
+      size: 1047449
+      nfiles: 4
+    - path: src/data/data_prep.py
+      hash: md5
+      md5: e287f29f3e6352fb175ab44c709187f8
+      size: 1866
+    params:
+      params.yaml:
+        model_building.n_estimators: 100
+    outs:
+    - path: data/processed
+      hash: md5
+      md5: 90134ed55480e4dade71cf8f51033ee5.dir
+      size: 521886
+      nfiles: 2
+  model_building:
+    cmd: python src/model/model_building.py
+    deps:
+    - path: data/processed
+      hash: md5
+      md5: 90134ed55480e4dade71cf8f51033ee5.dir
+      size: 521886
+      nfiles: 2
+    - path: src/model/model_building.py
+      hash: md5
+      md5: 96ae55388f0f3dc07fb7965598e9fadf
+      size: 2619
+    outs:
+    - path: models/model.pkl
+      hash: md5
+      md5: d7353058251e60d0f1b94e4763653c97
+      size: 7169738
+  model_eval:
+    cmd: python src/model/model_eval.py
+    deps:
+    - path: models/model.pkl
+      hash: md5
+      md5: d7353058251e60d0f1b94e4763653c97
+      size: 7169738
+    - path: src/model/model_eval.py
+      hash: md5
+      md5: 7fc3ff6e8c88641f59ccc34afa47c35d
+      size: 2717
+    outs:
+    - path: reports/metrics.json
+      hash: md5
+      md5: 54ca854502189e224c2903a24e21f4d4
+      size: 133

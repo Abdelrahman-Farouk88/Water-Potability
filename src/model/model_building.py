@@ -30,7 +30,7 @@ def load_data(filepath : str) -> pd.DataFrame:
 
 def prepare_data(data:pd.DataFrame) -> tuple[pd.DataFrame, pd.Series]:
     try:
-        X = data.drop(columns=['Potability'], axis=1)
+        X = data.drop(columns=['Potability'])
         y = data['Potability']
         return X,y
     except Exception as e:
@@ -65,16 +65,22 @@ def main():
     try:
         params_path = 'params.yaml'
         data_path = './data/processed/train_processed.csv'
-        model_name = 'model.pkl'
+        
+        model_dir = 'models' 
+        model_name = os.path.join(model_dir, 'model.pkl')
 
-        n_estimators =  load_params(params_path)
+        n_estimators = load_params(params_path)
         train_data = load_data(data_path)
         X_train, y_train = prepare_data(train_data)
         model = train_model(X_train, y_train, n_estimators)
+        
+        os.makedirs(model_dir, exist_ok=True)
+        
         save_model(model, model_name)
+        print(f"Model successfully saved to {model_name}")
+        
     except Exception as e:
-        raise Exception(f'An error occured : {e}')
-    
+        raise Exception(f'An error occurred: {e}')    
 if __name__ == '__main__':
     main()
 

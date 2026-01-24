@@ -3,6 +3,7 @@ import numpy as np
 
 import pickle
 import json
+import os
 
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
 
@@ -18,7 +19,7 @@ def load_data(filepath : str) -> pd.DataFrame:
 
 def prepare_data(data:pd.DataFrame) -> tuple[pd.DataFrame, pd.Series]:
     try:
-        X = data.drop(columns=['Potability'], axis=1)
+        X = data.drop(columns=['Potability'])
         y = data['Potability']
         return X,y
     except Exception as e:
@@ -66,18 +67,21 @@ def evaluation_model(model, X_test: pd.DataFrame, y_test:pd.Series) -> dict:
     
 def save_metrics(metrics_dict : dict, filepath : str) -> None:
     try:
-        with open('metrics.json', 'w') as file:
+        # Ensure the directory (reports/) exists
+        os.makedirs(os.path.dirname(filepath), exist_ok=True)
+        
+        # Use the 'filepath' variable instead of hardcoding 'metrics.json'
+        with open(filepath, 'w') as file:
             json.dump(metrics_dict, file, indent=4)
     except Exception as e:
-        raise Exception(f'Error saving metrics to {filepath}:{e}')
-    
+        raise Exception(f'Error saving metrics to {filepath}:{e}')    
 
 def main():
 
     try:    
         test_data_path = './data/processed/test_processed.csv'
-        model_path = 'model.pkl'
-        metrics_path = 'metrics.json'
+        model_path = 'models/model.pkl'
+        metrics_path = 'reports/metrics.json'
 
         test_data = load_data(test_data_path)
 
