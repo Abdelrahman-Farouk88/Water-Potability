@@ -37,7 +37,7 @@ stages:
       size: 1866
     params:
       params.yaml:
-        model_building.n_estimators: 100
+        model_building.n_estimators: 1000
     outs:
     - path: data/processed
       hash: md5
