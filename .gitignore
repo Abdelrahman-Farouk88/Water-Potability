@@ -81,7 +81,11 @@ target/
 # exclude data from source control by default
 /data/**
 
-# BUT allow DVC metadata
+# Re-allow directories so Git can see inside
+!/data/
+!/data/**/
+
+# Allow DVC metadata
 !/data/**/*.dvc
 !/data/**/.gitignore
 
