@@ -39,12 +39,9 @@ def save_data(df : pd.DataFrame, filepath : str) -> None:
 
 
 def main():
-    # Cookiecutter standard: Raw data lives in data/raw
     data_filepath = os.path.join('data', 'raw', 'water_potability.csv')
     params_filepath = 'params.yaml'
     
-    # You might want to save the split files to 'interim' or 'processed'
-    # but based on your script, we'll stick to data/raw/splits or similar
     output_path = os.path.join('data', 'raw') 
 
     try:
@@ -52,7 +49,6 @@ def main():
         test_size = load_params(params_filepath)
         train_data, test_data = split_data(data, test_size)
 
-        # exist_ok=True is crucial for dvc repro
         os.makedirs(output_path, exist_ok=True)
 
         save_data(train_data, os.path.join(output_path, 'train.csv'))
@@ -61,7 +57,6 @@ def main():
         print("Successfully split data in data/raw/")
         
     except Exception as e:
-        # This will now give you a much clearer error if the path is still wrong
         raise Exception(f'An error occurred: {e}')
     
 if __name__ == '__main__':
